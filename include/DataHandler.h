@@ -26,6 +26,7 @@
 #include <atomic>
 #include <memory>
 #include <set>
+#include <numeric>
 
 #include <boost/log/trivial.hpp>
 #include <boost/fusion/container/map.hpp>
