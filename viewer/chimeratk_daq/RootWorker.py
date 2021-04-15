@@ -1,7 +1,9 @@
 import sys
+# Set path to find root
 sys.path.append("/usr/lib/root")
 import ROOT
-ROOT.gSystem.Load("libApplicationCore-MicroDAQ-Tools.so")
+# Load micro daq library
+ROOT.gSystem.Load("/usr/lib/libApplicationCore-MicroDAQ-Tools.so")
 from ROOT.uDAQ import DataHandler, Trace, TimeAxis
 from PyQt5.QtCore import QThread, pyqtSignal
 import logging
