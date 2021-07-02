@@ -113,7 +113,7 @@ class TableManager():
     if node in self.app.nodes:
       logger_client.info("No subscription added since node is already subscribed.")
     else:
-      logger_client.info("Adding subscription for " + node.get_parent().get_variables()[2].get_value())
+      logger_client.info("Adding subscription for " + node.nodeid.Identifier)
       self._subscription = self.app.uaclient.subscribe_datachange(node, self.app.handler)
     # list holding the node and the row [name, row]
     self.app.tableWidget.insertRow(self.app.tableWidget.rowCount())
@@ -128,10 +128,10 @@ class TableManager():
       if node == parameter[0]:
         # set parameter name
         item = QtWidgets.QTableWidgetItem()
-        item.setText(parameter[0].get_parent().get_variables()[2].get_value())
+        item.setText(parameter[0].nodeid.Identifier)
         self.app.tableWidget.setItem(parameter[1],0, item)
         item = QtWidgets.QTableWidgetItem()
-        item.setText(parameter[0].get_parent().get_variables()[1].get_value())
+        item.setText(parameter[0].get_variables()[2].get_value())
         self.app.tableWidget.setItem(parameter[1],2, item)
 
         if value != None:
@@ -346,7 +346,6 @@ class MicroDAQviewer_live(QMainWindow, Ui_MainWindow):
     menu.addAction("Put to plot (3,2)", lambda: self.plotManagers[7].putGraph())
     menu.addAction("Put to plot (3,3)", lambda: self.plotManagers[8].putGraph())
     menu.addAction("Add to table", lambda: self.tableManager.addParameter())
-    menu.addAction("Use as trigger", lambda: self.trigger.setTrigger())
     menu.exec_(self.treeView.viewport().mapToGlobal(position))
 
   def openTableContextMenu(self, position):
