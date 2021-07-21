@@ -499,10 +499,10 @@ class HDF5Viewer(QtGui.QMainWindow, Ui_MainWindow):
       for filename in glob.glob(args.path[0] + "*" + match + "*.h5"):
         try:
           # new file name style
-          tmpList.append((int(filename[filename.rfind("buffer")+6:filename.find(".")]),filename))
+          tmpList.append((int(filename[filename.rfind("buffer")+6:filename.rfind(".")]),filename))
         except ValueError:
           # old file name style
-          tmpList.append((int(filename[filename.rfind("data")+4:filename.find(".")]),filename))
+          tmpList.append((int(filename[filename.rfind("data")+4:filename.rfind(".")]),filename))
 
     if args.sortByName == True:
       #Sort and shrink before opening files...
