@@ -129,7 +129,7 @@ class PlotManager():
       self.app.setStatusBarMsg("")
 
 
-class HDF5Viewer(QtGui.QMainWindow, Ui_MainWindow):
+class HDF5Viewer(QtWidgets.QMainWindow, Ui_MainWindow):
   
   def updateEvent(self, event):
     # obtain new event number
@@ -177,7 +177,7 @@ class HDF5Viewer(QtGui.QMainWindow, Ui_MainWindow):
       # print("adding item: "+ newPath)
     
       # create tree item
-      entry = QtGui.QTreeWidgetItem(parentTreeItem)
+      entry = QtWidgets.QTreeWidgetItem(parentTreeItem)
       entry.setText(0, name)
       entry.setData(0, QtCore.Qt.UserRole, newPath)
       
@@ -193,7 +193,7 @@ class HDF5Viewer(QtGui.QMainWindow, Ui_MainWindow):
           entry.setForeground(0,QtGui.QBrush(QtGui.QColor("#48ba0b"))) #green
             
   def openTreeContextMenu(self, position):
-    menu = QtGui.QMenu()
+    menu = QtWidgets.QMenu()
     for i in range(0, self.nPlots):
       menu.addAction("Put to plot (" + str(i % 3) + "," + str(int(i / 3)) + ")", lambda: self.plotManagers[i].putGraph()) 
     menu.addAction("Add to table", lambda: self.tableManager.addParameter())
@@ -201,7 +201,7 @@ class HDF5Viewer(QtGui.QMainWindow, Ui_MainWindow):
     menu.exec_(self.treeWidget.viewport().mapToGlobal(position))
     
   def openTableContextMenu(self, position):
-    menu = QtGui.QMenu()
+    menu = QtWidgets.QMenu()
     rows = []
     for item in self.tableWidget.selectedItems():
       rows.append(self.tableWidget.row(item))
