@@ -190,7 +190,7 @@ class errorPopup(QtWidgets.QWidget):
         self.initUI()
 
     def initUI(self):
-        lblName = QtGui.QLabel(self.name, self)
+        lblName = QtWidgets.QLabel(self.name, self)
 
 class Trigger():
   '''
@@ -279,7 +279,7 @@ class Trigger():
       self.app.progressBar.setEnabled(False)
 
 
-class RootViewer(QtGui.QMainWindow, Ui_MainWindow):
+class RootViewer(QtWidgets.QMainWindow, Ui_MainWindow):
   
   def startDataCollection(self, pvSet):
     ''' 
@@ -390,7 +390,7 @@ class RootViewer(QtGui.QMainWindow, Ui_MainWindow):
           tmp = tmp + "." + d                                             #Probe.Calibration  
         if tmp not in self.dirs:
           '''Check if directory in path exists and if not create it'''
-          entry = QtGui.QTreeWidgetItem(dirItem)
+          entry = QtWidgets.QTreeWidgetItem(dirItem)
           entry.setText(0, d)
           entry.setData(0, QtCore.Qt.UserRole, tmp)
           dirItem = entry
@@ -400,7 +400,7 @@ class RootViewer(QtGui.QMainWindow, Ui_MainWindow):
           dirItem = self.dirItems[tmp]
       
       logging.debug("Adding item: " + s.split('.')[-1] + " with path: " + path)
-      entry = QtGui.QTreeWidgetItem(self.dirItems[path])
+      entry = QtWidgets.QTreeWidgetItem(self.dirItems[path])
       entry.setText(0, s.split('.')[-1])
       entry.setData(0, QtCore.Qt.UserRole, s)
       if self.worker.isTrace(branch_list.at(i)) == True:
@@ -409,7 +409,7 @@ class RootViewer(QtGui.QMainWindow, Ui_MainWindow):
         entry.setForeground(0,QtGui.QBrush(QtGui.QColor("#48ba0b"))) #green
       
   def openTreeContextMenu(self, position):
-    menu = QtGui.QMenu()
+    menu = QtWidgets.QMenu()
     for i in range(self.nPlots):
       menu.addAction("Put to plot (" + str(i % 3) + "," + str(int(i / 3)) + ")", lambda: self.plotManagers[i].putGraph()) 
     menu.addAction("Add to table", lambda: self.tableManager.addParameter())
@@ -417,7 +417,7 @@ class RootViewer(QtGui.QMainWindow, Ui_MainWindow):
     menu.exec_(self.treeWidget.viewport().mapToGlobal(position))
     
   def openTableContextMenu(self, position):
-    menu = QtGui.QMenu()
+    menu = QtWidgets.QMenu()
     rows = []
     for item in self.tableWidget.selectedItems():
       rows.append(self.tableWidget.row(item))
@@ -579,7 +579,7 @@ class RootViewer(QtGui.QMainWindow, Ui_MainWindow):
     self.setupUi(self)
     # set of directory names
     self.dirs = set()
-    # dictionary -> dictionary: QtGui.QTreeWidgetItem
+    # dictionary -> dictionary: QtWidgets.QTreeWidgetItem
     self.dirItems = {}
     
     self.timeRange = [0,0]

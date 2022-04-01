@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 from chimeratk_daq.MicroDAQviewerUI_live import Ui_MainWindow
 
-from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSignal, QSettings, QTimer, QObject
-from PyQt5.Qt import QApplication, QMainWindow, Qt, QMenu, QColor, QBrush
+from PyQt5.Qt import QApplication, QMainWindow, Qt, QMenu, QColor, QBrush, QTableWidgetItem
 
 import pyqtgraph as pg
 
@@ -127,15 +126,15 @@ class TableManager():
       # find row to update
       if node == parameter[0]:
         # set parameter name
-        item = QtWidgets.QTableWidgetItem()
+        item = QTableWidgetItem()
         item.setText(parameter[0].nodeid.Identifier)
         self.app.tableWidget.setItem(parameter[1],0, item)
-        item = QtWidgets.QTableWidgetItem()
+        item = QTableWidgetItem()
         item.setText(parameter[0].get_variables()[2].get_value())
         self.app.tableWidget.setItem(parameter[1],2, item)
 
         if value != None:
-          item = QtWidgets.QTableWidgetItem()
+          item = QTableWidgetItem()
           if type(value) == list:
             arr = numpy.asanyarray(value, dtype = numpy.float32)
             item.setForeground(QBrush(QColor("#48ba0b")))

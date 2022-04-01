@@ -1,21 +1,30 @@
 # ApplicationCore-MicroDAQ-Tools
 
 This packages provides tools related to the ApplicationCore-MicroDAQ package that add the DAQ modules to ApplciationCore.
-Basically the package provides a PyQT5 based data inspector `MicroDAQViewer`.
+Basically the package provides a PyQt5 based data inspector `MicroDAQViewer`.
 Features of that viewer are e.g.:
 
 * Plot scalar and array data for single events
 * Table view of scalar and array data
 * Timeline of scalar and array data (time range can be given a number of events or directly by specifying the time range)
-* Search for events fullfilling specific trigger requirements
+* Search for events fulfilling specific trigger requirements
 
-Also another PyQT5 based program called `UaClient` is included in the package. This is an OPC-UA based live viewer. The OPCUA client is based on freeopcua and requiers to install `opcua-client` via pip3.
+Required python packages:
+
+* PyQt5
+* pyqtgraph
+* h5py
+* cppyy
+
+You might need to add `/usr/lib/root` to `PYTHONPATH` and `LD_LIBRARY_PATH`.
+
+Also another PyQT5 based program called `UaClient` is included in the package. This is an OPC-UA based live viewer. The OPCUA client is based on freeopcua and requires to install `opcua-client` via pip3.
 
 If `root` support is enabled addition features are provided:
 
 * `libApplicationCore-MicroDAQ-Tools.so`: Includes ROOT related tools. This library is used by the `MicroDAQViewer` when working on ROOT files
 * `hdf5Converter`: C++ application that allows to convert HDF5 files to ROOT files, which reduces the disc usage significantly
-* `plot`: Example showing how to use `uDAQ::DataHandler` clas provided in `libApplicationCore-MicroDAQ-Tools.so`
+* `plot`: Example showing how to use `uDAQ::DataHandler` class provided in `libApplicationCore-MicroDAQ-Tools.so`
 
 ## ROOT file quick analysis
 

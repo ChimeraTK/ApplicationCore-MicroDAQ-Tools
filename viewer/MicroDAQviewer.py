@@ -4,7 +4,7 @@
 import sys
 import argparse
 import logging
-from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from chimeratk_daq.MicroDAQviewerUI import Ui_MainWindow
 from chimeratk_daq.HDF5Viewer import HDF5Viewer
@@ -16,7 +16,7 @@ except ImportError:
   found_root = False
 
 def main(args):
-  app = QtGui.QApplication(sys.argv)
+  app = QtWidgets.QApplication(sys.argv)
   if found_root and args.useHDF5 == False:
     form = RootViewer(args)
   else:

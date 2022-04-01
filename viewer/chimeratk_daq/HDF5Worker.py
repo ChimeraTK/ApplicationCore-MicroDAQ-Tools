@@ -1,6 +1,5 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QLabel
 import h5py
 import logging
 import numpy as np
@@ -19,7 +18,7 @@ class errorPopup(QtWidgets.QWidget):
       self.initUI()
 
   def initUI(self):
-      lblName = QLabel(self.name, self)
+      lblName = QtWidgets.QLabel(self.name, self)
 
 class Trigger():
   '''
