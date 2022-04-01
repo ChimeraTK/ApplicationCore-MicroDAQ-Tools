@@ -166,7 +166,9 @@ size_t DataHandler::getTypeFromTree(const char *branchName){
       return 4;
     if (std::string(b->GetClassName()).compare("TArrayS") == 0)
       return 5;
-    throw std::runtime_error(std::string("Unknown datatype for branch: ") + branchName);
+    if (std::string(b->GetClassName()).compare("TArrayC") == 0)
+        return 6;
+    throw std::runtime_error(std::string("Unknown datatype for array branch: ") + branchName);
   }
   auto l = m_chain->GetListOfLeaves();
   TLeafObject* lo = (TLeafObject*)l->FindObject(branchName);
@@ -182,7 +184,9 @@ size_t DataHandler::getTypeFromTree(const char *branchName){
   if((typeName.compare("Short_t") == 0) || (typeName.compare("UShort_t") == 0) ||
      (typeName.compare("Char_t") == 0) || (typeName.compare("UChar_t") == 0))
     return 5;
-  throw std::runtime_error(std::string("Unknown datatype for branch: ") + branchName);
+  if(typeName.compare("Bool_t") == 0)
+    return 6;
+  throw std::runtime_error(std::string("Unknown datatype for scalar branch: ") + branchName);
 }
 
 bool DataHandler::prepareTree(const Long_t &event){
@@ -341,6 +345,8 @@ void DataHandler::prepareReading(const std::set<std::string> &processVariables){
       setupBranch<TArrayL>(*branchName);
     } else if (type == 5) {
       setupBranch<TArrayS>(*branchName);
+    } else if (type == 6) {
+      setupBranch<TArrayC>(*branchName);
     }
   }
   m_nActiveBranches = processVariables.size();
@@ -701,4 +707,5 @@ template struct chainHelper<TArrayD>;
 template struct chainHelper<TArrayI>;
 template struct chainHelper<TArrayL>;
 template struct chainHelper<TArrayS>;
+template struct chainHelper<TArrayC>;
 } // namespace uDAQ

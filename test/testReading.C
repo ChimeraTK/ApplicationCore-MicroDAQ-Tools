@@ -21,6 +21,7 @@
 #include "TArrayL.h"
 #include "TArrayD.h"
 #include "TArrayI.h"
+#include "TArrayC.h"
 #include "TTree.h"
 
 #include <map>
@@ -28,7 +29,7 @@
 #include "DataHandler.h"
 
 // list of user types to be tested. These are the data types used in ChimeraTK
-typedef boost::mpl::list<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, uint64_t, int64_t, float, double> test_types;
+typedef boost::mpl::list<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, uint64_t, int64_t, float, double, bool> test_types;
 
 /**
  *  This is copied from ApplicationCore-MicroDAQ data_types.h
@@ -88,7 +89,11 @@ struct TreeDataFields<int64_t>{
   std::map<std::string, Long64_t> parameter;
   std::map<std::string, TArrayL > trace;
 };
-
+template<>
+struct TreeDataFields<bool>{
+  std::map<std::string, Bool_t> parameter;
+  std::map<std::string, TArrayC > trace;
+};
 
 template <typename T>
 struct DataSet {
@@ -105,8 +110,15 @@ struct DataSet {
     tree.Branch("timeInfo", &t);
     for(size_t event = 0; event < 10; event++){
       data.parameter["test"] = event;
-      for(size_t i = 0; i < 10; i++){
-        data.trace["test"][i] = i + event;
+      if constexpr (std::is_same<T, bool>::value){
+        data.trace["test"][0] = 0;
+        for(size_t i = 1; i < 10; i++){
+          data.trace["test"][i] = !data.trace["test"][i-1];
+        }
+      } else {
+        for(size_t i = 0; i < 10; i++){
+          data.trace["test"][i] = i + event;
+        }
       }
       tree.Fill();
     }
@@ -120,7 +132,6 @@ struct DataSet {
   }
 };
 
-
 BOOST_AUTO_TEST_CASE_TEMPLATE( testReading, T, test_types)
 {
   DataSet<T> ds;
@@ -129,9 +140,14 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( testReading, T, test_types)
   ds.dh->readData(0);
   BOOST_CHECK_EQUAL(ds.dh->timeLines["val"].y.size(),1);
   BOOST_CHECK_EQUAL(ds.dh->timeLines["val"].y[0],0);
-  std::vector<T> v = {0,1,2,3,4,5,6,7,8,9};
   BOOST_CHECK_EQUAL(ds.dh->timeLines["arr"].y.size(),10);
-  BOOST_CHECK_EQUAL_COLLECTIONS(v.begin(), v.end(),
-      ds.dh->timeLines["arr"].y.begin(), ds.dh->timeLines["arr"].y.end());
-
+  if constexpr (std::is_same<T, bool>::value){
+    std::vector<bool> v = {false,true,false,true,false,true,false,true,false,true};
+    BOOST_CHECK_EQUAL_COLLECTIONS(v.begin(), v.end(),
+        ds.dh->timeLines["arr"].y.begin(), ds.dh->timeLines["arr"].y.end());
+  } else {
+    std::vector<T> v = {0,1,2,3,4,5,6,7,8,9};
+    BOOST_CHECK_EQUAL_COLLECTIONS(v.begin(), v.end(),
+        ds.dh->timeLines["arr"].y.begin(), ds.dh->timeLines["arr"].y.end());
+  }
 }

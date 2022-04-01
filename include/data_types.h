@@ -11,10 +11,6 @@
 #include "TString.h"
 #include "TDatime.h"
 #include "TArrayF.h"
-#include "TArrayS.h"
-#include "TArrayL.h"
-#include "TArrayD.h"
-#include "TArrayI.h"
 
 #include <map>
 namespace hdf5converter{

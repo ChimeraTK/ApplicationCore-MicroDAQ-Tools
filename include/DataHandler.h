@@ -18,6 +18,7 @@
 #include "TArrayD.h"
 #include "TArrayL.h"
 #include "TArrayS.h"
+#include "TArrayC.h"
 #include "TTimeStamp.h"
 
 #include "data_types.h"
@@ -113,8 +114,8 @@ class TemplateUserTypeMap {
                      boost::fusion::pair<TArrayD, TemplateClass<TArrayD>>,
                      boost::fusion::pair<TArrayI, TemplateClass<TArrayI>>,
                      boost::fusion::pair<TArrayL, TemplateClass<TArrayL>>,
-                     boost::fusion::pair<TArrayS, TemplateClass<TArrayS>>
-//                     boost::fusion::pair<Double_t, TemplateClass<Double_t>>
+                     boost::fusion::pair<TArrayS, TemplateClass<TArrayS>>,
+                     boost::fusion::pair<TArrayC, TemplateClass<TArrayC>>
                      > table;
 };
 
