@@ -57,7 +57,7 @@ ENDIF(ENABLE_ROOT)
 #                                                                  Build target
 IF(ENABLE_ROOT)
   IF(ENABLE_HDF5)
-    # binary used to convert hdf5 files to root								                      
+    # binary used to convert hdf5 files to root                                     
     add_executable(hdf5Converter scripts/hdf5Converter.C)
     target_link_libraries( hdf5Converter Boost::program_options
                                          Boost::log
@@ -147,18 +147,24 @@ find_program(lsb_release lsb_release)
                 
 set(os_vendor ${lsb_vendor_name})
 
-find_package(PythonLibs REQUIRED)
-string(REPLACE "." ";" version_list ${PYTHONLIBS_VERSION_STRING})
-list(GET version_list 0 major_version)
-list(GET version_list 1 minor_version)
+
+if(${CMAKE_VERSION} VERSION_LESS "3.12.0")
+  find_package(PythonLibs REQUIRED) 
+  string(REPLACE "." ";" version_list ${PYTHONLIBS_VERSION_STRING})
+  list(GET version_list 0 Python3_VERSION_MAJOR)
+  list(GET version_list 1 Python3_VERSION_MINOR)
+else()
+  find_package (Python3 COMPONENTS Interpreter)
+endif()
+
 if(("${os_vendor}" STREQUAL "Ubuntu") AND 
     (("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr") OR
      ("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")))
   string(FIND ${PYTHONLIBS_VERSION_STRING} "." PYPOS REVERSE)
   string(SUBSTRING ${PYTHONLIBS_VERSION_STRING} ${PYPOS} -1 pyMAJOR)
-  set(PYTHON_INSTALL_LIB lib/python${major_version}/dist-packages)
+  set(PYTHON_INSTALL_LIB lib/python${Python3_VERSION_MAJOR}/dist-packages)
 else()
-  set(PYTHON_INSTALL_LIB lib/python${major_version}.${minor_version}/site-packages)
+  set(PYTHON_INSTALL_LIB lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages)
 endif()
 if(NOT ENABLE_ROOT)
   INSTALL( DIRECTORY ${PROJECT_SOURCE_DIR}/viewer/chimeratk_daq
