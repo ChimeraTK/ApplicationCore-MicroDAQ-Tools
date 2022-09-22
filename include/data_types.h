@@ -8,9 +8,9 @@
 #ifndef INCLUDE_DATA_TYPES_H_
 #define INCLUDE_DATA_TYPES_H_
 
-#include "TString.h"
-#include "TDatime.h"
 #include "TArrayF.h"
+#include "TDatime.h"
+#include "TString.h"
 
 #include <map>
 namespace hdf5converter {
@@ -30,9 +30,9 @@ namespace hdf5converter {
 } // namespace hdf5converter
 namespace uDAQ {
   /**
- * Trace is introduced for better readability and because pyroot can not handle
- * std::map<std::string, std::pair<std::vector, std::vector> > >
- */
+   * Trace is introduced for better readability and because pyroot can not handle
+   * std::map<std::string, std::pair<std::vector, std::vector> > >
+   */
   struct Trace {
     std::vector<Double_t> x, y;
     Trace(){};

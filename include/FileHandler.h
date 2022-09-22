@@ -9,24 +9,23 @@
 #define INCLUDE_FILEHANDLER_H_
 
 #include "data_types.h"
-
-#include <string>
-#include <memory>
-
 #include "H5Cpp.h"
-#include <boost/date_time/local_time/local_time.hpp>
-
+#include "TArrayF.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "TArrayF.h"
+
+#include <boost/date_time/local_time/local_time.hpp>
+
+#include <memory>
+#include <string>
 
 namespace hdf5converter {
   /**
- * Helper struct to read the date string used in the log files:
- * e.g. Mon Jan 19 14:35:25 2015
- * The actual format is set when initializing a dateparser object.
- * The format given above corresponds to  %a %b %d %H:%M:%S %Y.
- */
+   * Helper struct to read the date string used in the log files:
+   * e.g. Mon Jan 19 14:35:25 2015
+   * The actual format is set when initializing a dateparser object.
+   * The format given above corresponds to  %a %b %d %H:%M:%S %Y.
+   */
   struct dateparser {
     dateparser(std::string fmt) : msec(0), time(0) {
       // set format
@@ -72,8 +71,8 @@ namespace hdf5converter {
     long GetNEvents();
 
     /**
-   * \remark If a certain value could not be read from the HDF5 file it is set to -9999.
-   */
+     * \remark If a certain value could not be read from the HDF5 file it is set to -9999.
+     */
     void readData(const unsigned long& event);
   };
 

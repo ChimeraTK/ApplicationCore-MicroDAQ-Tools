@@ -5,26 +5,26 @@
  *      Author: Klaus Zenker (HZDR)
  */
 
-#include <algorithm>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <numeric>
-#include <utility>
-
 #include "DataHandler.h"
 
 #include "TFile.h"
-#include "TTreeReader.h"
-#include "TTree.h"
-#include "TMath.h"
 #include "TLeafObject.h"
+#include "TMath.h"
+#include "TTree.h"
+#include "TTreeReader.h"
 
 #include <boost/filesystem.hpp>
-#include <boost/log/core.hpp>
-#include <boost/log/expressions.hpp>
 #include <boost/fusion/algorithm.hpp>
 #include <boost/fusion/include/at_key.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/expressions.hpp>
+
+#include <algorithm>
+#include <numeric>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace std;
 
@@ -141,14 +141,14 @@ namespace uDAQ {
 
   size_t DataHandler::getTypeFromTree(const char* branchName) {
     /*
-   * Check Trace:
-   * - auto b = m_chain->GetBranch("aLLRF.1-3GHz");
-   * - std::string(b->GetClassName()).empty() -> true if not a trace
-   * In case it is not a trace check data type:
-   * - auto l = chain->GetListOfLeaves()
-   * - TLeafObject* lo = (TLeafObject*)l->FindObject("aLLRF.1-3GHz")
-   * - lo->GetTypeName()
-   */
+     * Check Trace:
+     * - auto b = m_chain->GetBranch("aLLRF.1-3GHz");
+     * - std::string(b->GetClassName()).empty() -> true if not a trace
+     * In case it is not a trace check data type:
+     * - auto l = chain->GetListOfLeaves()
+     * - TLeafObject* lo = (TLeafObject*)l->FindObject("aLLRF.1-3GHz")
+     * - lo->GetTypeName()
+     */
     auto b = m_chain->GetBranch(branchName);
     if(!b) throw std::runtime_error(std::string("Failed to find branch: ") + branchName);
 
@@ -226,15 +226,15 @@ namespace uDAQ {
 
     struct UpdateData {
       /**
-   * Read data from the file and copy the data to the timeLines.
-   * \param caller The DataHandler to use for reading
-   * \param nMax The number of events to be collected into the timeLine (defines the length of the timeLien).
-   * If eventID < 0 this parameter is ignored. In that case the length of the timeLine is defined by the array length read here.
-   * \param event The number of the event that is currently filled. Should start with 0 and end with nMax-1
-   * \param eventID The event number in the TTree/TChain. It is used for the x vector of the Trace. If eventID<0
-   * it is assumed that only a single event is read. In that case the timeLine is actually the array read for this event. The
-   * x vector is filled with the array index.
-   */
+       * Read data from the file and copy the data to the timeLines.
+       * \param caller The DataHandler to use for reading
+       * \param nMax The number of events to be collected into the timeLine (defines the length of the timeLien).
+       * If eventID < 0 this parameter is ignored. In that case the length of the timeLine is defined by the array
+       * length read here. \param event The number of the event that is currently filled. Should start with 0 and end
+       * with nMax-1 \param eventID The event number in the TTree/TChain. It is used for the x vector of the Trace. If
+       * eventID<0 it is assumed that only a single event is read. In that case the timeLine is actually the array read
+       * for this event. The x vector is filled with the array index.
+       */
       UpdateData(DataHandler* caller, size_t nMax, size_t event, int eventID = -1)
       : _caller(caller), _nMax(nMax), _event(event), _eventID(eventID) {}
       DataHandler* _caller;
@@ -277,7 +277,8 @@ namespace uDAQ {
 
           // Put data into the time lines and do the data conversion
           if(_eventID < 0) {
-            //        BOOST_LOG_TRIVIAL(debug) << "Filling data for variable " << it->second.branch->GetName() << ", which has size: " << it->second.arr.GetSize() << endl;
+            //        BOOST_LOG_TRIVIAL(debug) << "Filling data for variable " << it->second.branch->GetName() << ",
+            //        which has size: " << it->second.arr.GetSize() << endl;
             for(Int_t i = 0; i < it->second.arr.GetSize(); i++) {
               currentTrace->y[i] = it->second.arr[i];
               currentTrace->x[i] = i;
@@ -302,7 +303,8 @@ namespace uDAQ {
               }
               else {
                 // do not throw here since it can not be catched so far and it might happen regularly
-                //            throw std::runtime_error(std::string("Requested array position is too large. Maximum is :")+std::to_string(it->second.arr.GetSize()-1));
+                //            throw std::runtime_error(std::string("Requested array position is too large. Maximum is
+                //            :")+std::to_string(it->second.arr.GetSize()-1));
                 BOOST_LOG_TRIVIAL(warning) << "Requested array position is too large. Will use maximum instead: "
                                            << it->second.arr.GetSize() - 1 << endl;
                 currentTrace->y.at(_event) = it->second.arr.At(it->second.arr.GetSize() - 1);
@@ -322,7 +324,8 @@ namespace uDAQ {
               }
             }
             else {
-              // do not fill the event number but the event ID. E.g. when plotting event 400 to 500 the first event id is 400 and the first event is 0
+              // do not fill the event number but the event ID. E.g. when plotting event 400 to 500 the first event id
+              // is 400 and the first event is 0
               currentTrace->x.at(_event) = _eventID;
             }
           }

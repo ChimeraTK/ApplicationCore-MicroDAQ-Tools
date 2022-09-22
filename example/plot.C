@@ -6,9 +6,8 @@
  */
 
 #include "DataHandler.h"
-
-#include "TCanvas.h"
 #include "TApplication.h"
+#include "TCanvas.h"
 #include "TSystem.h"
 
 #include <iostream>

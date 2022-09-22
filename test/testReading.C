@@ -5,27 +5,26 @@
  *      Author: Klaus Zenker (HZDR)
  */
 
-//#define BOOST_TEST_DYN_LINK
+// #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE MicroDAQTest
 
-#include <boost/test/unit_test.hpp>
-#include <boost/test/included/unit_test.hpp>
-#include <boost/fusion/container/map.hpp>
-#include <boost/mpl/list.hpp>
-#include <boost/filesystem.hpp>
-
-#include "TFile.h"
-#include "TArrayF.h"
-#include "TArrayS.h"
-#include "TArrayL.h"
-#include "TArrayD.h"
-#include "TArrayI.h"
+#include "DataHandler.h"
 #include "TArrayC.h"
+#include "TArrayD.h"
+#include "TArrayF.h"
+#include "TArrayI.h"
+#include "TArrayL.h"
+#include "TArrayS.h"
+#include "TFile.h"
 #include "TTree.h"
 
-#include <map>
+#include <boost/filesystem.hpp>
+#include <boost/fusion/container/map.hpp>
+#include <boost/mpl/list.hpp>
+#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
-#include "DataHandler.h"
+#include <map>
 
 // list of user types to be tested. These are the data types used in ChimeraTK
 typedef boost::mpl::list<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, uint64_t, int64_t, float, double, bool>
