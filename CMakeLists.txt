@@ -160,8 +160,6 @@ endif()
 if(("${os_vendor}" STREQUAL "Ubuntu") AND 
     (("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr") OR
      ("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")))
-  string(FIND ${PYTHONLIBS_VERSION_STRING} "." PYPOS REVERSE)
-  string(SUBSTRING ${PYTHONLIBS_VERSION_STRING} ${PYPOS} -1 pyMAJOR)
   set(PYTHON_INSTALL_LIB lib/python${Python3_VERSION_MAJOR}/dist-packages)
 else()
   set(PYTHON_INSTALL_LIB lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages)
