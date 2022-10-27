@@ -608,7 +608,7 @@ class RootViewer(QtWidgets.QMainWindow, Ui_MainWindow):
       nMax = 3
     for i in range(self.nPlots):
       self.plotManagers.append(PlotManager(self))
-      self.gridLayout.addWidget(self.plotManagers[i].plot, i % nMax, i / nMax)
+      self.gridLayout.addWidget(self.plotManagers[i].plot, i % nMax, int(i / nMax))
       
     # enable context menu in tree widget
     self.treeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -649,9 +649,9 @@ class RootViewer(QtWidgets.QMainWindow, Ui_MainWindow):
     self.dateLast.setCalendarPopup(True)
     
     (ts,tms) = self.worker.getTimeStamp(0)
-    t1 = QtCore.QDateTime.fromMSecsSinceEpoch(1000.*ts + tms)
+    t1 = QtCore.QDateTime.fromMSecsSinceEpoch(int(1000.*ts + tms))
     (ts,tms) = self.worker.getTimeStamp(self.nEvents-1)
-    t2 = QtCore.QDateTime.fromMSecsSinceEpoch(1000.*ts + tms)
+    t2 = QtCore.QDateTime.fromMSecsSinceEpoch(int(1000.*ts + tms))
     self.dateFirst.setMinimumDateTime(t1)
     self.dateFirst.setMaximumDateTime(t2)
     self.dateLast.setMinimumDateTime(t1)
