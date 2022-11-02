@@ -176,7 +176,7 @@ class worker(QThread):
   
   updateStatus = pyqtSignal(int)
   triggerResult = pyqtSignal(int)
-  percentage = pyqtSignal(float)
+  percentage = pyqtSignal(int)
   updated = pyqtSignal()
   
   def __init__(self, app, files, sortByTimeStamp = False, maxFiles = None):
@@ -350,7 +350,7 @@ class worker(QThread):
               else:
                 logging.error("Unknown array position: {}".format(self.arrayPos))
           
-        self.percentage.emit(100.*event/(self.eventRange[1]-self.eventRange[0]))
+        self.percentage.emit(int(100.*event/(self.eventRange[1]-self.eventRange[0])))
       for item in self.plotItems:
         # convert to numpy
         self.data[item] = (np.asarray(self.data[item][0]),np.asarray(self.data[item][1]))

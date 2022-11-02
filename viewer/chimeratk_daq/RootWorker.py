@@ -20,7 +20,7 @@ def pyboolToRoot(pybool):
 
 class worker(QThread):
   triggerResult = pyqtSignal(int)
-  percentage = pyqtSignal(float)
+  percentage = pyqtSignal(int)
   updated = pyqtSignal()
   def __init__(self, args):
     QThread.__init__(self)
@@ -31,7 +31,7 @@ class worker(QThread):
     vMatch = ROOT.vector('std::string')()
     for i in args.matchString:
       vMatch.push_back(i)
-    self.DataHandler = DataHandler(args.path[0], pyboolToRoot(args.sortByTimeStamp), vMatch, args.maxFiles)
+    self.DataHandler = DataHandler(args.path, pyboolToRoot(args.sortByTimeStamp), vMatch, args.maxFiles)
     if self.DataHandler.getTreeName() == "llrf_server_data":
       logging.info("Working on LLRF data.")
 #       self.DataHandler = DataHandlerLLRF(args.path, pyboolToRoot(args.sortByTimeStamp), args.matchString, args.maxFiles)
@@ -136,7 +136,7 @@ class worker(QThread):
                                                   self.triggerInfo['findNext'])
         while(True):
           (done, percentage) = self.DataHandler.isDone()
-          self.percentage.emit(percentage)
+          self.percentage.emit(int(percentage))
           if done == True:
             break
           sleep(0.5)
@@ -146,7 +146,7 @@ class worker(QThread):
         self.DataHandler.startTriggerSearch(list(self.pvSet)[0],self.triggerInfo['threshold'], self.triggerInfo['operator'], self.arrayPosition)
         while(True):
           (done, percentage) = self.DataHandler.isDone()
-          self.percentage.emit(percentage)
+          self.percentage.emit(int(percentage))
           if done == True:
             break
           sleep(0.5)
@@ -191,7 +191,7 @@ class worker(QThread):
       
       while(True):
         (done, percentage) = self.DataHandler.isDone()
-        self.percentage.emit(percentage)
+        self.percentage.emit(int(percentage))
         if done == True:
           break
         sleep(0.5)
