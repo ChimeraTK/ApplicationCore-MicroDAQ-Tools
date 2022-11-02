@@ -8,6 +8,7 @@ from PyQt5 import QtWidgets
 
 from chimeratk_daq.MicroDAQviewerUI import Ui_MainWindow
 from chimeratk_daq.HDF5Viewer import HDF5Viewer
+from chimeratk_daq.DataSelectorUI import Ui_PathSelectWindow
 
 found_root = True
 try:
@@ -15,21 +16,117 @@ try:
 except ImportError:
   found_root = False
 
+class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
+  
+  def exit(self, button):
+    if self._path == None:
+      msg = QtWidgets.QMessageBox()
+      msg.setIcon(QtWidgets.QMessageBox.Critical)
+      msg.setText("No path set.")
+      msg.setInformativeText('Please set a data path!')
+      msg.setWindowTitle("Unit Error")
+      msg.exec_()
+    else:
+      QtWidgets.qApp.exit()
+  
+  def setDirectory(self):
+    if self._path == None:
+      name = QtWidgets.QFileDialog.getExistingDirectory(self, 'Add directory', '/home', QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
+    else:
+      name = QtWidgets.QFileDialog.getExistingDirectory(self, 'Add directory', self._path, QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
+    if name != "":
+      logging.info("Add directory: " + name)
+      self._path = name
+      self.dataPath.setText(name)
+    
+  def setDirectoryManual(self, text):
+    self._path = text
+    self.dataPath.setText(text)
+  
+  def addMatch(self):
+    if self.matchPattern.text() in self._match:
+      logging.error("Not going to add {} twice. {} is already in the list of matches".format(self.matchPattern.text(),self.matchPattern.text()))
+      return
+    
+    if self.matchPattern.text() == "":
+      logging.error("Not going to add empty match.")
+      return
+    if self._match == "":
+      self._match = []
+    self._match.append(self.matchPattern.text())
+    item = QtWidgets.QListWidgetItem()
+    item.setText(self._match[-1])
+    self.matchList.insertItem(len(self._match)-1,item)
+  
+  def enableHDF5(self, state):
+    if state == True:
+      self.useSortByName.setEnabled(True)
+      self.useTimeStampSorting.setEnabled(False)
+    else:
+      self.useSortByName.setEnabled(False)
+      self.useTimeStampSorting.setEnabled(True)
+  
+  def __init__(self, args, parent=None):
+    super(DiaglogView, self).__init__(parent)
+    self.setupUi(self)
+    
+    self._path = args.path
+    self.dataPath.setText(self._path)
+    self._match = args.matchString
+    
+    self.nPlots.setValue(args.nPlots)
+    self.maxFiles.setValue(args.maxFiles)
+    
+    if args.matchString != "":
+      for matchString in self._match:
+        item = QtWidgets.QListWidgetItem()
+        item.setText(matchString)
+        self.matchList.insertItem(len(self._match)-1,item)
+    
+    self.buttonBox.clicked.connect(self.exit)
+    self.setDataPath.clicked.connect(self.setDirectory)
+    self.dataPath.textChanged.connect(self.setDirectoryManual)
+    self.addMatchPattern.clicked.connect(self.addMatch)
+    self.useHDF5.clicked.connect(self.enableHDF5)
+
 def main(args):
-  app = QtWidgets.QApplication(sys.argv)
-  if found_root and args.useHDF5 == False:
-    form = RootViewer(args)
-  else:
-    form = HDF5Viewer(args)
-  form.show()
-  app.exec_()
+  currentExitCode = None
+  while currentExitCode == Ui_MainWindow.EXIT_CODE_REBOOT or currentExitCode == None:
+    if args.path == None or currentExitCode == Ui_MainWindow.EXIT_CODE_REBOOT:
+      # run data dialog
+      app = QtWidgets.QApplication(sys.argv)
+      form = DiaglogView(args)
+      form.show()
+      app.exec_()
+      args.path = form._path
+      args.matchString = form._match
+      args.maxFiles = form.maxFiles.value()
+      args.nPlots = form.nPlots.value()
+      args.sortByName = form.useSortByName.isChecked()
+      args.sortByTimeStamp = form.useTimeStampSorting.isChecked()
+      args.useHDF5 = form.useHDF5.isChecked()
+    if args.path == None:
+      logging.error("Failed to get path name.")
+      sys.exit(-1)
+    app = None # delete the QApplication object
+    
+    # run main GUI
+    app = QtWidgets.QApplication(sys.argv)
+    if found_root and args.useHDF5 == False:
+      form = RootViewer(args)
+    else:
+      form = HDF5Viewer(args)
+    form.show()
+    currentExitCode = app.exec_()
+    app = None # delete the QApplication object
+
 
 
 if __name__ == '__main__':
   # Create command line argument parser
   parser = argparse.ArgumentParser(description='Analyse MicroDAQ data',
       formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-  parser.add_argument('path', type=str, nargs=1,
+  parser.add_argument('-p' ,'--path', type=str, default=None,
                       help='path were the MicroDAQ files are located')
   parser.add_argument('-m','--matchString', type=str, nargs='+', default='',
                       help='Only files including the given string in their name will be considered.')

@@ -130,7 +130,6 @@ class PlotManager():
 
 
 class HDF5Viewer(QtWidgets.QMainWindow, Ui_MainWindow):
-  
   def updateEvent(self, event):
     # obtain new event number
     self.iCurrentEvent = event
@@ -473,6 +472,10 @@ class HDF5Viewer(QtWidgets.QMainWindow, Ui_MainWindow):
     else:
       logger.setLevel(logging.INFO)
     
+  @QtCore.pyqtSlot(bool)  
+  def on_actionSet_Data_Path_triggered(self, triggered):
+    QtWidgets.qApp.exit( Ui_MainWindow.EXIT_CODE_REBOOT )
+    
   def __init__(self, args, parent=None):
     super(HDF5Viewer, self).__init__(parent)
     self.setupUi(self)
@@ -481,10 +484,10 @@ class HDF5Viewer(QtWidgets.QMainWindow, Ui_MainWindow):
       args.matchString = [""]
       
     # check if path ends with '/'
-    if(len(args.path[0]) != 0):
-      if(args.path[0].endswith('/') == False):
-        args.path[0] = args.path[0] + '/'
-        logging.debug("Add missing slash to the path string. New string is: " + args.path[0])
+    if(len(args.path) != 0):
+      if(args.path.endswith('/') == False):
+        args.path = args.path + '/'
+        logging.debug("Add missing slash to the path string. New string is: " + args.path)
       
     
     # open all data*.h5 files in current directory
@@ -496,7 +499,7 @@ class HDF5Viewer(QtWidgets.QMainWindow, Ui_MainWindow):
     tmpList = []
     startIndex = 0
     for match in args.matchString:
-      for filename in glob.glob(args.path[0] + "*" + match + "*.h5"):
+      for filename in glob.glob(args.path + "*" + match + "*.h5"):
         try:
           # new file name style
           tmpList.append((int(filename[filename.rfind("buffer")+6:filename.rfind(".")]),filename))
@@ -508,7 +511,7 @@ class HDF5Viewer(QtWidgets.QMainWindow, Ui_MainWindow):
       #Sort and shrink before opening files...
       tmpList.sort()
       try:
-        with open(args.path[0] + 'currentBuffer') as bufferFile:
+        with open(args.path + 'currentBuffer') as bufferFile:
           currentBuffer = int(next(bufferFile).split()[0])
       except FileNotFoundError as e:
         print("The currentBuffer file is missing in the given path. Try using no sort or sortByTimeStamp")
@@ -535,7 +538,7 @@ class HDF5Viewer(QtWidgets.QMainWindow, Ui_MainWindow):
     self.plotManagers = []
     for i in range(0, self.nPlots):
       self.plotManagers.append(PlotManager(self))
-      self.gridLayout.addWidget(self.plotManagers[i].plot, i % nMax, i / nMax)
+      self.gridLayout.addWidget(self.plotManagers[i].plot, i % nMax, int(i / nMax))
       
     # enable context menu in tree widget
     self.treeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)

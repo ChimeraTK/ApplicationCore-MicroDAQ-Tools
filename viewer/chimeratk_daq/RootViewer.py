@@ -280,7 +280,7 @@ class Trigger():
 
 
 class RootViewer(QtWidgets.QMainWindow, Ui_MainWindow):
-  
+  EXIT_CODE_REBOOT = -123
   def startDataCollection(self, pvSet):
     ''' 
     Start reading data for the given set of process variables.
@@ -574,6 +574,13 @@ class RootViewer(QtWidgets.QMainWindow, Ui_MainWindow):
     else:
       logger.setLevel(logging.INFO)
 
+  # def setPath(self):
+    # name = QtWidgets.QFileDialog.getExistingDirectory(self, 'Set directory', '/home', QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
+    # logging.info("Add directory: " + name)
+  @QtCore.pyqtSlot(bool)  
+  def on_actionSet_Data_Path_triggered(self, triggered):
+    QtWidgets.qApp.exit( Ui_MainWindow.EXIT_CODE_REBOOT )
+
   def __init__(self, args, parent=None):
     super(RootViewer, self).__init__(parent)
     self.setupUi(self)
@@ -586,9 +593,9 @@ class RootViewer(QtWidgets.QMainWindow, Ui_MainWindow):
     self.rangeIsSet = False
 
     # check if path ends with '/'
-    if(args.path[0].endswith('/') == False):
-      args.path[0] = args.path[0] + '/'
-      logging.debug("Add missing slash to the path string. New string is: " + args.path[0])
+    if(args.path.endswith('/') == False):
+      args.path = args.path + '/'
+      logging.debug("Add missing slash to the path string. New string is: " + args.path)
 
     self.worker = worker(args)      
     # make sure at least one file found
@@ -676,3 +683,4 @@ class RootViewer(QtWidgets.QMainWindow, Ui_MainWindow):
    
     #connect debug option
     self.actionEnableDebugging.triggered.connect(self.setDebugging)
+    
