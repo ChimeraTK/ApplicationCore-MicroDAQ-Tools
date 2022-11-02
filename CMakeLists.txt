@@ -64,11 +64,32 @@ IF(ENABLE_ROOT)
                                          ${PROJECT_NAME})
     set_target_properties(hdf5Converter PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")                                      
     set_target_properties(hdf5Converter PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+    
+    # Library used to analyse ROOT files
+    add_library( ${PROJECT_NAME} SHARED src/DataHandler.cpp  src/FileHandler.cpp
+                                        ${ROOTDICT})
+    target_link_libraries( ${PROJECT_NAME} ${HDF5_HL_LIBRARIES} 
+                                           ${HDF5_CXX_LIBRARIES} 
+                                           ROOT::Core
+                                           ROOT::RIO
+                                           ROOT::Tree
+                                           ROOT::Graf
+                                           Boost::filesystem
+                                           Boost::log)
+  
+  ELSE()
+    # Library used to analyse ROOT files
+    add_library( ${PROJECT_NAME} SHARED src/DataHandler.cpp
+                                      ${ROOTDICT})
+    target_link_libraries( ${PROJECT_NAME} ROOT::Core
+                                           ROOT::RIO
+                                           ROOT::Tree
+                                           ROOT::Graf
+                                           Boost::filesystem
+                                           Boost::log)
+  
   ENDIF(ENABLE_HDF5)
 
-  # Library used to analyse ROOT files
-  add_library( ${PROJECT_NAME} SHARED src/DataHandler.cpp  src/FileHandler.cpp
-                                      ${ROOTDICT})
   set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "include/data_types.h;include/DataHandler.h")
   set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_FULL_LIBRARY_VERSION} SOVERSION ${${PROJECT_NAME}_SOVERSION})
   set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
