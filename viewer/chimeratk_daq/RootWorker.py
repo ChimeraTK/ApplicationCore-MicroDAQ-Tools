@@ -56,7 +56,7 @@ class worker(QThread):
   def getTimeStamp(self, event):
     self.DataHandler.readTimeStamp(event)
     try:
-      return (self.DataHandler.m_timeStamp.GetSec(), self.DataHandler.m_timeStamp.GetNanoSec()/1000)
+      return (self.DataHandler.m_timeStamp.GetSec(), self.DataHandler.m_timeStamp.GetNanoSec()*1e-6)
     except ReferenceError:
       return (self.DataHandler.m_tinfo.timeStamp, self.DataHandler.m_tinfo.msec)
   
