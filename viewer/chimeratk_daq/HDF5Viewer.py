@@ -103,10 +103,8 @@ class PlotManager():
     # reset the plot and remove legend and title
     self.plot.clear()
     self.plot.setTitle("")
-    if self.legend != None:
-      self.plot.scene().removeItem(self.legend)
-    # add legend if multiple plot entries are present
-    if len(self.plotItems) > 1:
+    # add legend if multiple plot entries are present - will stay also if later only one plot is added
+    if self.legend == None and len(self.plotItems) > 1:
       self.legend = self.plot.addLegend()
     penIndex = 0
     # loop over plot entries

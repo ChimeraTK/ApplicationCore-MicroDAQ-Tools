@@ -133,10 +133,8 @@ class PlotManager():
     # reset the plot and remove legend and title
     self.plot.clear()
     self.plot.setTitle("")
-    if self.legend != None:
-      self.plot.scene().removeItem(self.legend)
-    # add legend if multiple plot entries are present
-    if len(self.plotItems) > 1:
+    # add legend if multiple plot entries are present - will stay also if later only one plot is added
+    if self.legend == None and len(self.plotItems) > 1:
       self.legend = self.plot.addLegend()
     penIndex = 0
     isTrace = False
@@ -521,7 +519,7 @@ class RootViewer(QtWidgets.QMainWindow, Ui_MainWindow):
       found = None
       for event in range(self.nEvents):
         ts,tms = self.worker.getTimeStamp(event)
-        tqt = QtCore.QDateTime.fromMSecsSinceEpoch(ts*1000+tms)
+        tqt = QtCore.QDateTime.fromMSecsSinceEpoch(int(ts*1000+tms))
         if event == 0:
           lastQt = tqt
         if found == None and tqt >= tStart:
