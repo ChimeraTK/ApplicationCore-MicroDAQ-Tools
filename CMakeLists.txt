@@ -12,7 +12,7 @@ option(ENABLE_TESTING "Build tests" ON)
 #                                                                       VERSION
 set( ${PROJECT_NAME}_MAJOR_VERSION 01 )
 set( ${PROJECT_NAME}_MINOR_VERSION 03 )
-set( ${PROJECT_NAME}_PATCH_VERSION 00 )
+set( ${PROJECT_NAME}_PATCH_VERSION 01 )
 include(${CMAKE_SOURCE_DIR}/cmake/set_version_numbers.cmake)
 
 include(${CMAKE_SOURCE_DIR}/cmake/set_default_flags.cmake)
@@ -181,6 +181,7 @@ endif()
 if(("${os_vendor}" STREQUAL "Ubuntu") AND 
     (("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr") OR
      ("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")))
+  message(STATUS "Vendor is: ${os_vendor}. Prefix is set to: ${CMAKE_INSTALL_PREFIX}. So python install location is set to: lib/python${Python3_VERSION_MAJOR}/dist-packages") 
   set(PYTHON_INSTALL_LIB lib/python${Python3_VERSION_MAJOR}/dist-packages)
 else()
   set(PYTHON_INSTALL_LIB lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages)
