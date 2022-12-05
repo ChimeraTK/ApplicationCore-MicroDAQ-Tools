@@ -48,6 +48,11 @@ int main(int argc, char* argv[]) {
       cout << generic << endl;
       return 0;
     }
+    else if(!vm.count("var")) {
+      cerr << "No variable spcified. Use something like e.g. system.status.cpuTotal!" << endl;
+      cout << generic << endl;
+      return 0;
+    }
     if(vm.count("match")) {
       match = vm["match"].as<vector<string>>();
     }
