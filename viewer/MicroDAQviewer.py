@@ -7,6 +7,7 @@ import fnmatch
 import argparse
 import logging
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QSettings
 
 from chimeratk_daq.MicroDAQviewerUI import Ui_MainWindow
 from chimeratk_daq.HDF5Viewer import HDF5Viewer
@@ -44,24 +45,34 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
   def setDirectoryManual(self, text):
     self._path = text
     self.dataPath.setText(text)
+    self.settings.setValue("dataPath",text)
     self._updateStatusBar()
   
   def _updateStatusBar(self):
-    if self.useHDF5.isChecked():
-      filter  = fnmatch.filter(os.listdir(self._path), "*.h5")
-    else:
-      filter = fnmatch.filter(os.listdir(self._path), "*.root")
-    nFiles = len(filter)
+    if self._path == None:
+      return
+    try:
+      if self.useHDF5.isChecked():
+        filter  = fnmatch.filter(os.listdir(self._path), "*.h5")
+      else:
+        filter = fnmatch.filter(os.listdir(self._path), "*.root")
+    except:
+      return
+    self.nFiles = len(filter)
+    
+    if self.nFiles == 0:
+      self.setStatusBarMsg("No daq files in the specified directory.",'error')
+      return
     sizeOfFirstFile = os.stat(self._path+"/"+filter[0]).st_size/(1024*1024)
     
     if nFiles*sizeOfFirstFile > 1000:
-      estimateSize = "{} GB".format((int)(nFiles*sizeOfFirstFile/1000))
+      estimateSize = "{} GB".format((int)(self.nFiles*sizeOfFirstFile/1000))
     else:
-      estimateSize = "{} MB".format((int)(nFiles*sizeOfFirstFile))
+      estimateSize = "{} MB".format((int)(self.nFiles*sizeOfFirstFile))
     if nFiles*sizeOfFirstFile > 2*1000:
-      self.setStatusBarMsg("Selected {} files. Estimated size: {}. Try to reduce the dataset using match stings!".format(nFiles, estimateSize),'warning')
+      self.setStatusBarMsg("Selected {} files. Estimated size: {}. Try to reduce the dataset using match stings!".format(self.nFiles, estimateSize),'warning')
     else:
-      self.setStatusBarMsg("Selected {} files. Estimated size: {}".format(nFiles, estimateSize),'info')
+      self.setStatusBarMsg("Selected {} files. Estimated size: {}".format(self.nFiles, estimateSize),'info')
 
   def addMatch(self):
     if self.matchPattern.text() in self._match:
@@ -109,6 +120,7 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
     self.setupUi(self)
     
     self._path = args.path
+    self.nFiles = 0
     self.dataPath.setText(self._path)
     self._match = args.matchString
     
@@ -127,6 +139,8 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
     self.addMatchPattern.clicked.connect(self.addMatch)
     self.useHDF5.clicked.connect(self.enableHDF5)
     self._updateStatusBar()
+    self.settings = QSettings("HZDR", "MicroDAQ Data Viewer")
+    self.dataPath.setText(self.settings.value("dataPath", defaultValue="/home/", type=str))
 
 def main(args):
   currentExitCode = None
@@ -146,6 +160,9 @@ def main(args):
       args.useHDF5 = form.useHDF5.isChecked()
     if args.path == None:
       logging.error("Failed to get path name.")
+      sys.exit(-1)
+    if form.nFiles == 0:
+      logging.error("No DAQ files found..")
       sys.exit(-1)
     app = None # delete the QApplication object
     
