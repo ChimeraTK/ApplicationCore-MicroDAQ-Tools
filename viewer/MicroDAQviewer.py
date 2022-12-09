@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
+import fnmatch
 import argparse
 import logging
 from PyQt5 import QtWidgets
@@ -42,7 +44,25 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
   def setDirectoryManual(self, text):
     self._path = text
     self.dataPath.setText(text)
+    self._updateStatusBar()
   
+  def _updateStatusBar(self):
+    if self.useHDF5.isChecked():
+      filter  = fnmatch.filter(os.listdir(self._path), "*.h5")
+    else:
+      filter = fnmatch.filter(os.listdir(self._path), "*.root")
+    nFiles = len(filter)
+    sizeOfFirstFile = os.stat(self._path+"/"+filter[0]).st_size/(1024*1024)
+    
+    if nFiles*sizeOfFirstFile > 1000:
+      estimateSize = "{} GB".format((int)(nFiles*sizeOfFirstFile/1000))
+    else:
+      estimateSize = "{} MB".format((int)(nFiles*sizeOfFirstFile))
+    if nFiles*sizeOfFirstFile > 2*1000:
+      self.setStatusBarMsg("Selected {} files. Estimated size: {}. Try to reduce the dataset using match stings!".format(nFiles, estimateSize),'warning')
+    else:
+      self.setStatusBarMsg("Selected {} files. Estimated size: {}".format(nFiles, estimateSize),'info')
+
   def addMatch(self):
     if self.matchPattern.text() in self._match:
       logging.error("Not going to add {} twice. {} is already in the list of matches".format(self.matchPattern.text(),self.matchPattern.text()))
@@ -65,6 +85,24 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
     else:
       self.useSortByName.setEnabled(False)
       self.useTimeStampSorting.setEnabled(True)
+    self._updateStatusBar()
+      
+  def setStatusBarMsg(self, msg, level = 'status'):
+    '''
+    Print message in the status bar.
+    @param msg: Message to be shown.
+    @param level:  Level to be used. Available are: error (red), status (black), info (green)
+    '''
+    if level == 'error':
+      self.statusBar.setStyleSheet("QStatusBar{padding-left:8px;background:rgba(255,0,0,255);color:black;font-weight:bold;}")
+    elif level == 'info':
+      self.statusBar.setStyleSheet("QStatusBar{padding-left:8px;background:rgba(0,204,0,255);color:black;font-weight:bold;}")
+    elif level == 'warning':
+      self.statusBar.setStyleSheet("QStatusBar{padding-left:8px;background:rgba(254,178,76);color:black;font-weight:bold;}")
+    else:
+      self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;background:rgba(255,0,0,0);color:black;font-weight:normal;}")
+    self.statusBar.showMessage(str(msg))
+
   
   def __init__(self, args, parent=None):
     super(DiaglogView, self).__init__(parent)
@@ -88,6 +126,7 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
     self.dataPath.textChanged.connect(self.setDirectoryManual)
     self.addMatchPattern.clicked.connect(self.addMatch)
     self.useHDF5.clicked.connect(self.enableHDF5)
+    self._updateStatusBar()
 
 def main(args):
   currentExitCode = None

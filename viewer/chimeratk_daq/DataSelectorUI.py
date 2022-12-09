@@ -94,16 +94,16 @@ class Ui_PathSelectWindow(object):
         self.buttonBox.setObjectName("buttonBox")
         self.verticalLayout.addWidget(self.buttonBox)
         PathSelectWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(PathSelectWindow)
-        self.statusbar.setObjectName("statusbar")
-        PathSelectWindow.setStatusBar(self.statusbar)
+        self.statusBar = QtWidgets.QStatusBar(PathSelectWindow)
+        self.statusBar.setObjectName("statusBar")
+        PathSelectWindow.setStatusBar(self.statusBar)
 
         self.retranslateUi(PathSelectWindow)
         QtCore.QMetaObject.connectSlotsByName(PathSelectWindow)
 
     def retranslateUi(self, PathSelectWindow):
         _translate = QtCore.QCoreApplication.translate
-        PathSelectWindow.setWindowTitle(_translate("PathSelectWindow", "MainWindow"))
+        PathSelectWindow.setWindowTitle(_translate("PathSelectWindow", "Data Selection"))
         self.label_4.setText(_translate("PathSelectWindow", "Data directory:"))
         self.addMatchPattern.setToolTip(_translate("PathSelectWindow", "<html><head/><body><p>Add a match string used to select only a subset of the files in the directory.</p></body></html>"))
         self.addMatchPattern.setText(_translate("PathSelectWindow", "Add Match"))
