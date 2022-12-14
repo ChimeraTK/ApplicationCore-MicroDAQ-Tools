@@ -49,6 +49,8 @@ class Ui_PathSelectWindow(object):
         self.label.setObjectName("label")
         self.horizontalLayout_3.addWidget(self.label, 0, QtCore.Qt.AlignTop)
         self.matchList = QtWidgets.QListWidget(self.centralwidget)
+        self.matchList.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.matchList.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.matchList.setObjectName("matchList")
         self.horizontalLayout_3.addWidget(self.matchList)
         self.verticalLayout.addLayout(self.horizontalLayout_3)

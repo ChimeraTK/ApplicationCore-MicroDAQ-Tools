@@ -51,14 +51,20 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
   def _updateStatusBar(self):
     if self._path == None:
       return
+    suffix = "*.root"
+    if self.useHDF5.isChecked():
+      suffix = "*.h5"
     try:
-      if self.useHDF5.isChecked():
-        filter  = fnmatch.filter(os.listdir(self._path), "*.h5")
+      if len(self._match) > 0:
+        # filter by match strings
+        self.nFiles = sum(map(lambda x: len(fnmatch.filter(os.listdir(self._path),x+suffix)),self._match))
+        # get files for the first match -> used to estimate the total size below
+        filter  = fnmatch.filter(os.listdir(self._path), self._match[0]+suffix)
       else:
-        filter = fnmatch.filter(os.listdir(self._path), "*.root")
+        filter  = fnmatch.filter(os.listdir(self._path), suffix)
+        self.nFiles = len(filter)      
     except:
       return
-    self.nFiles = len(filter)
     
     if self.nFiles == 0:
       self.setStatusBarMsg("No daq files in the specified directory.",'error')
@@ -88,6 +94,7 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
     item = QtWidgets.QListWidgetItem()
     item.setText(self._match[-1])
     self.matchList.insertItem(len(self._match)-1,item)
+    self._updateStatusBar()
   
   def enableHDF5(self, state):
     if state == True:
@@ -114,6 +121,16 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
       self.statusbar.setStyleSheet("QStatusBar{padding-left:8px;background:rgba(255,0,0,0);color:black;font-weight:normal;}")
     self.statusBar.showMessage(str(msg))
 
+  def removeItems(self, items):
+    for item in items:
+      self.matchList.takeItem(self.matchList.row((item)))
+      self._match.remove(item.text())
+    self._updateStatusBar()
+  
+  def openTableContextMenu(self, position):
+    menu = QtWidgets.QMenu()
+    menu.addAction("Remove selected rows", lambda: self.removeItems(self.matchList.selectedItems()))
+    menu.exec_(self.matchList.viewport().mapToGlobal(position))
   
   def __init__(self, args, parent=None):
     super(DiaglogView, self).__init__(parent)
@@ -138,9 +155,13 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
     self.dataPath.textChanged.connect(self.setDirectoryManual)
     self.addMatchPattern.clicked.connect(self.addMatch)
     self.useHDF5.clicked.connect(self.enableHDF5)
+    # self.bRemoveMatch.clicked.connect(self.removeMatch)
     self._updateStatusBar()
     self.settings = QSettings("HZDR", "MicroDAQ Data Viewer")
     self.dataPath.setText(self.settings.value("dataPath", defaultValue="/home/", type=str))
+    
+    # enable context menu in tree widget
+    self.matchList.customContextMenuRequested.connect(self.openTableContextMenu)
 
 def main(args):
   currentExitCode = None
