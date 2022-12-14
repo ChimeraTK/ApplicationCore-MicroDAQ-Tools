@@ -65,11 +65,11 @@ class DiaglogView(QtWidgets.QMainWindow, Ui_PathSelectWindow):
       return
     sizeOfFirstFile = os.stat(self._path+"/"+filter[0]).st_size/(1024*1024)
     
-    if nFiles*sizeOfFirstFile > 1000:
+    if self.nFiles*sizeOfFirstFile > 1000:
       estimateSize = "{} GB".format((int)(self.nFiles*sizeOfFirstFile/1000))
     else:
       estimateSize = "{} MB".format((int)(self.nFiles*sizeOfFirstFile))
-    if nFiles*sizeOfFirstFile > 2*1000:
+    if self.nFiles*sizeOfFirstFile > 2*1000:
       self.setStatusBarMsg("Selected {} files. Estimated size: {}. Try to reduce the dataset using match stings!".format(self.nFiles, estimateSize),'warning')
     else:
       self.setStatusBarMsg("Selected {} files. Estimated size: {}".format(self.nFiles, estimateSize),'info')
