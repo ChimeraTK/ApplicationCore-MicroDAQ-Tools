@@ -179,11 +179,25 @@ def main(args):
       args.sortByName = form.useSortByName.isChecked()
       args.sortByTimeStamp = form.useTimeStampSorting.isChecked()
       args.useHDF5 = form.useHDF5.isChecked()
+      if form.nFiles == 0:
+        logging.error("No DAQ files found..")
+        sys.exit(-1)
+
+    else:
+      if args.useHDF5:
+        suffix = "*.h5"
+      else:
+        suffix = "*.root"
+      if len(args.matchString) == 0:
+        nFiles = len(fnmatch.filter(os.listdir(args.path),suffix))
+      else:
+        nFiles = sum(map(lambda x: len(fnmatch.filter(os.listdir(args.path),x+suffix)),args.matchString))
+      if nFiles == 0:
+        logging.error("No DAQ files found..")
+        sys.exit(-1)
+
     if args.path == None:
       logging.error("Failed to get path name.")
-      sys.exit(-1)
-    if form.nFiles == 0:
-      logging.error("No DAQ files found..")
       sys.exit(-1)
     app = None # delete the QApplication object
     
