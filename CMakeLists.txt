@@ -196,6 +196,14 @@ if(NOT ENABLE_ROOT)
                        GROUP_EXECUTE GROUP_READ
                        WORLD_READ)
 else()
+  configure_file(${PROJECT_SOURCE_DIR}/viewer/chimeratk_daq/RootWorker.py.in ${PROJECT_BINARY_DIR}/RootWorker.py @ONLY)
+  INSTALL( FILES ${PROJECT_BINARY_DIR}/RootWorker.py
+           DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_LIB}/chimeratk_daq
+           COMPONENT analysis
+           PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE
+                       GROUP_EXECUTE GROUP_READ
+                       WORLD_READ)
+
   INSTALL( DIRECTORY ${PROJECT_SOURCE_DIR}/viewer/chimeratk_daq
            DESTINATION ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTALL_LIB}
            COMPONENT analysis
