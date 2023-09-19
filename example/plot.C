@@ -2,7 +2,7 @@
  * plot.C
  *
  *  Created on: May 28, 2018
- *      Author: zenker
+ *      Author: Klaus Zenker (HZDR)
  */
 
 #include "DataHandler.h"

@@ -2,7 +2,7 @@
  * hdf5Converter.C
  *
  *  Created on: Oct 16, 2017
- *      Author: zenker
+ *      Author: Klaus Zenker (HZDR)
  */
 #include <iostream>
 
