@@ -1,5 +1,5 @@
 PROJECT(ApplicationCore-MicroDAQ-Tools)
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.16)
 
 #______________________________________________________________________________
 #                                                                       OPTIONS
@@ -14,7 +14,6 @@ set( ${PROJECT_NAME}_MAJOR_VERSION 01 )
 set( ${PROJECT_NAME}_MINOR_VERSION 06 )
 set( ${PROJECT_NAME}_PATCH_VERSION 02 )
 include(${CMAKE_SOURCE_DIR}/cmake/set_version_numbers.cmake)
-
 include(${CMAKE_SOURCE_DIR}/cmake/set_default_flags.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/set_default_build_to_release.cmake)
 
@@ -33,7 +32,6 @@ IF(ENABLE_ROOT)
 ENDIF(ENABLE_ROOT)
 
 # now set latest c++ support
-#ADD_DEFINITIONS("-pthread -std=c++14 -DBOOST_LOG_DYN_LINK")
 include(cmake/enable_latest_cxx_support.cmake)
 
 
@@ -41,7 +39,7 @@ FIND_PACKAGE( Boost REQUIRED COMPONENTS program_options log filesystem regex)
 
 #______________________________________________________________________________
 #                                                                      Includes
-include_directories( ${CMAKE_SOURCE_DIR}/include ${HDF5_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories( include ${HDF5_INCLUDE_DIRS})
 
 #______________________________________________________________________________
 #                                                                    Dictionary
@@ -61,7 +59,6 @@ IF(ENABLE_ROOT)
     target_link_libraries( hdf5Converter Boost::program_options
                                          Boost::log
                                          ${PROJECT_NAME})
-    set_target_properties(hdf5Converter PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")                                      
     set_target_properties(hdf5Converter PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
     
     # Library used to analyse ROOT files
@@ -92,7 +89,6 @@ IF(ENABLE_ROOT)
   set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "include/data_types.h;include/DataHandler.h")
   set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_FULL_LIBRARY_VERSION} SOVERSION ${${PROJECT_NAME}_SOVERSION})
   set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
-  set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DBOOST_LOG_DYN_LINK")                                    
   target_link_libraries( ${PROJECT_NAME} ${HDF5_HL_LIBRARIES} 
                                          ${HDF5_CXX_LIBRARIES} 
                                          ROOT::Core
@@ -108,7 +104,7 @@ IF(ENABLE_ROOT)
                               ROOT::Tree
                               Boost::program_options)
   set_target_properties( plot PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)                                
-
+  target_include_directories(${PROJECT_NAME} INTERFACE "$<INSTALL_INTERFACE:include>")
 ENDIF(ENABLE_ROOT)
 
 find_package(Boost COMPONENTS unit_test_framework)                            
