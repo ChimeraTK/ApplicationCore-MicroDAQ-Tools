@@ -12,7 +12,7 @@ option(ENABLE_TESTING "Build tests" ON)
 #                                                                       VERSION
 set( ${PROJECT_NAME}_MAJOR_VERSION 01 )
 set( ${PROJECT_NAME}_MINOR_VERSION 06 )
-set( ${PROJECT_NAME}_PATCH_VERSION 01 )
+set( ${PROJECT_NAME}_PATCH_VERSION 02 )
 include(${CMAKE_SOURCE_DIR}/cmake/set_version_numbers.cmake)
 
 include(${CMAKE_SOURCE_DIR}/cmake/set_default_flags.cmake)
@@ -26,7 +26,7 @@ IF(ENABLE_HDF5)
 ENDIF(ENABLE_HDF5)
 
 IF(ENABLE_ROOT)
-  FIND_PACKAGE(ROOT 6.08 REQUIRED COMPONENTS Core Tree Gui)
+  FIND_PACKAGE(ROOT 6.08 REQUIRED COMPONENTS Core Tree Gui Graf RIO)
   INCLUDE(${ROOT_USE_FILE})
   # first this since it sets -std=c++11
   ADD_DEFINITIONS(${ROOT_CXX_FLAGS})
@@ -41,8 +41,7 @@ FIND_PACKAGE( Boost REQUIRED COMPONENTS program_options log filesystem regex)
 
 #______________________________________________________________________________
 #                                                                      Includes
-include_directories( ${PROJECT_SOURCE_DIR} include ${HDF5_INCLUDE_DIRS})
-include_directories( ${Boost_INCLUDE_DIRS} )
+include_directories( ${CMAKE_SOURCE_DIR}/include ${HDF5_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
 #______________________________________________________________________________
 #                                                                    Dictionary
@@ -129,17 +128,21 @@ endif(Boost_UNIT_TEST_FRAMEWORK_FOUND AND ENABLE_TESTING)
 
 #______________________________________________________________________________
 #                                                             Install root part
+# Install the library and the executables
+# this defines architecture-dependent ${CMAKE_INSTALL_LIBDIR}
+include(GNUInstallDirs)
 if(ENABLE_ROOT)
   INSTALL(FILES ${PROJECT_BINARY_DIR}/lib${ROOTDICT}_rdict.pcm
-          DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/
+          DESTINATION ${CMAKE_INSTALL_LIBDIR}
           PERMISSIONS OWNER_READ OWNER_WRITE
                       GROUP_READ
                       WORLD_READ)
           
   INSTALL(TARGETS  ${PROJECT_NAME}
-          EXPORT ${PROJECT_NAME}LibraryDepends
-          LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/
-          PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+          EXPORT ${PROJECT_NAME}Targets
+          LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+          PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/ChimeraTK/ApplicationCore
+          RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}          
           PERMISSIONS OWNER_READ OWNER_WRITE
                       GROUP_READ
                       WORLD_READ)
@@ -148,15 +151,12 @@ if(ENABLE_ROOT)
   if(ENABLE_HDF5)
     INSTALL(TARGETS hdf5Converter
             EXPORT ${PROJECT_NAME}LibraryDepends 
-            LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-            RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} 
             PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
                         GROUP_READ GROUP_EXECUTE
                         WORLD_READ WORLD_EXECUTE)
   
   endif(ENABLE_HDF5)
-  
-  include(${CMAKE_SOURCE_DIR}/cmake/create_cmake_config_files.cmake)         
 endif(ENABLE_ROOT)         
 
 #______________________________________________________________________________
@@ -225,3 +225,14 @@ INSTALL( FILES ${PROJECT_SOURCE_DIR}/viewer/MicroDAQviewer.py
          PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
                      GROUP_READ GROUP_EXECUTE
                      WORLD_READ WORLD_EXECUTE)
+                     
+# export package
+if(ENABLE_ROOT)
+
+  list(APPEND ${PROJECT_NAME}_PUBLIC_DEPENDENCIES "Boost COMPONENTS filesystem log")
+  list(APPEND ${PROJECT_NAME}_PUBLIC_DEPENDENCIES "ROOT COMPONENTS Core Tree Gui Graf RIO")
+  # we support our cmake EXPORTS as imported targets
+  set(PROVIDES_EXPORTED_TARGETS 1)
+  include(${CMAKE_SOURCE_DIR}/cmake/create_cmake_config_files.cmake)        
+endif(ENABLE_ROOT)
+
