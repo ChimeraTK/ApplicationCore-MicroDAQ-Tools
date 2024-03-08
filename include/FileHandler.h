@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Helmholtz-Zentrum Dresden-Rossendorf, FWKE, ChimeraTK Project <chimeratk-support@desy.de>
+// SPDX-License-Identifier: LGPL-3.0-or-later
+#pragma once
 /*
  * FileHandler.h
  *
@@ -5,14 +8,11 @@
  *      Author: Klaus Zenker (HZDR)
  */
 
-#ifndef INCLUDE_FILEHANDLER_H_
-#define INCLUDE_FILEHANDLER_H_
-
-#include "data_types.h"
 #include "H5Cpp.h"
 #include "TArrayF.h"
 #include "TFile.h"
 #include "TTree.h"
+#include "TypeDefinitions.h"
 
 #include <boost/date_time/local_time/local_time.hpp>
 
@@ -91,5 +91,3 @@ namespace hdf5converter {
   };
 
 } // namespace hdf5converter
-
-#endif /* INCLUDE_FILEHANDLER_H_ */
