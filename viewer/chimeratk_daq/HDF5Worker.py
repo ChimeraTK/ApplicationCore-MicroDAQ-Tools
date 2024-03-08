@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Helmholtz-Zentrum Dresden-Rossendorf, FWKE, ChimeraTK Project <chimeratk-support@desy.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5 import QtWidgets
 import h5py
