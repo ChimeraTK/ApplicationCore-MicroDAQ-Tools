@@ -45,7 +45,7 @@ include_directories( include ${HDF5_INCLUDE_DIRS})
 #                                                                    Dictionary
 IF(ENABLE_ROOT)
   set( ROOTDICT ${PROJECT_NAME}Dict )
-  ROOT_GENERATE_DICTIONARY( ${ROOTDICT} data_types.h
+  ROOT_GENERATE_DICTIONARY( ${ROOTDICT} TypeDefinitions.h
                                         DataHandler.h
                                         LINKDEF include/LinkDef.h)
 ENDIF(ENABLE_ROOT)
@@ -86,7 +86,7 @@ IF(ENABLE_ROOT)
   
   ENDIF(ENABLE_HDF5)
 
-  set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "include/data_types.h;include/DataHandler.h")
+  set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "include/TypeDefinitions.h;include/DataHandler.h")
   set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_FULL_LIBRARY_VERSION} SOVERSION ${${PROJECT_NAME}_SOVERSION})
   set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
   target_link_libraries( ${PROJECT_NAME} ${HDF5_HL_LIBRARIES} 
