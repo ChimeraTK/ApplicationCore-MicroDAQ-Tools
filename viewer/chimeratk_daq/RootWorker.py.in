@@ -3,7 +3,8 @@ import sys
 sys.path.append("/usr/lib/root")
 import ROOT
 # Load micro daq library
-ROOT.gSystem.Load("@CMAKE_INSTALL_PREFIX@/lib/libApplicationCore-MicroDAQ-Tools.so")
+ROOT.gInterpreter.AddIncludePath("-I@CMAKE_INSTALL_PREFIX@/include/ChimeraTK/ApplicationCore")
+ROOT.gSystem.Load("@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/libApplicationCore-MicroDAQ-Tools.so")
 from ROOT.uDAQ import DataHandler, Trace, TimeAxis
 from PyQt5.QtCore import QThread, pyqtSignal
 import logging
