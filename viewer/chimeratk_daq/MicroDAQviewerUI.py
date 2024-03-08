@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Helmholtz-Zentrum Dresden-Rossendorf, FWKE, ChimeraTK Project <chimeratk-support@desy.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'MicroDAQviewerUI.ui'

@@ -1,12 +1,12 @@
+// SPDX-FileCopyrightText: Helmholtz-Zentrum Dresden-Rossendorf, FWKE, ChimeraTK Project <chimeratk-support@desy.de>
+// SPDX-License-Identifier: LGPL-3.0-or-later
+#pragma once
 /*
  * data_types.h
  *
  *  Created on: Oct 18, 2017
  *      Author: Klaus Zenker (HZDR)
  */
-
-#ifndef INCLUDE_DATA_TYPES_H_
-#define INCLUDE_DATA_TYPES_H_
 
 #include "TArrayF.h"
 #include "TDatime.h"
@@ -39,5 +39,3 @@ namespace uDAQ {
     Trace(size_t length) : x(std::vector<double>(length)), y(std::vector<double>(length)){};
   };
 } // namespace uDAQ
-
-#endif /* INCLUDE_DATA_TYPES_H_ */

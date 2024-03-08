@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Helmholtz-Zentrum Dresden-Rossendorf, FWKE, ChimeraTK Project <chimeratk-support@desy.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
 #!/usr/bin/env python
 # Found here: https://gist.github.com/cpascual/cdcead6c166e63de2981bc23f5840a98
 #############################################################################
