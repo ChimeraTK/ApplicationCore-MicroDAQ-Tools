@@ -1,5 +1,5 @@
 // This is based on the example /usr/share/doc/root/tutorials/tree/copytree.C included in the root installation
-// This script can be executed like root -b -q -l 'skimRootFile.C("{}")'
+// This script can be executed like root -b -q -l 'skimRootFile.C("data.root")' and will create `data_small.root` from `data.root`
 void skimRootFile(const char* input) {
   const auto filename = input;
   const auto treename = "data";
